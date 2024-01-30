@@ -42,14 +42,17 @@ def spectral_clustering(affinity, k):
     laplacian_affinity = laplacian(affinity)
 
     # TODO: Compute the first k eigenvectors of the Laplacian matrix
-    first_k_eigen_vectors = compute_first_k_eigen_vectors(A, k)
+
+    # U, _, _ = LA.svd(laplacian_affinity, full_matrices=False, lapack_driver="gesvd")
+    U, _, _ = LA.svd(laplacian_affinity, full_matrices=False)
+    first_k_eigen_vectors = U[:, -k:]
+
     # TODO: Apply K-means clustering on the selected eigenvectors
 
-    k_for_k_mean = 2
-    centroids, clusters = k_means_clustering(np.transpose(first_k_eigen_vectors), k_for_k_mean)
+    labels, centroids = k_means_clustering(first_k_eigen_vectors, k)
     # TODO: Return cluster labels
 
-    return centroids, clusters
+    return labels
 
 
 def compute_first_k_eigen_vectors(A, k):
@@ -138,8 +141,21 @@ def compute_first_k_eigen_vectors(A, k):
 # print(np.transpose(A))
 
 # ----------------------- test spectral_clustering  -----------------------
-A = np.array([[2, 3, 5],
-              [3, 4, 5],
-              [1, 2, 1]])
+# A = np.array([[2, 3, 5],
+#               [3, 4, 5],
+#               [1, 2, 1]])
 
-print(spectral_clustering(A, 2))
+# print(spectral_clustering(A, 2))
+
+# ----------------------------------------------
+
+# A = np.array([[2, 3, 5, 6],
+#               [3, 4, 5, 6],
+#               [1, 2, 1, 7],
+#               [4, 3, 2, 7]])
+
+# A_subset = A[:, -1:] 
+
+# print(A_subset)
+
+# -------------------- spectral_clustering test --------------------------

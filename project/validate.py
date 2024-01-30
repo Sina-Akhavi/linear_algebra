@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy import linalg as LA 
 
 from kmeans import k_means_clustering
 from spectral import spectral_clustering
@@ -18,44 +19,57 @@ def construct_affinity_matrix(data, affinity_type, *, k=3, sigma=1.0):
     Returns:
     - affinity_matrix: numpy array, the constructed affinity matrix based on the specified type.
     """
+    n = data.shape[0]
+    affinity_matrix = np.zeros((n, n))
 
     # TODO: Compute pairwise distances
 
     if affinity_type == 'knn':
         # TODO: Find k nearest neighbors for each point
+        for i in range(len(data)):
+            
+            distances = LA.norm(data - data[i], axis=1) 
+            k_neares_neighbors_indexes = np.argpartition(distances, k)[:k]
 
-        # TODO: Construct symmetric affinity matrix
+            affinity_matrix[i, k_neares_neighbors_indexes] = 1
+            affinity_matrix[k_neares_neighbors_indexes, i] = 1
+
+        # TODO: Construct symmetric affinity matrix?
 
         # TODO: Return affinity matrix
+        return affinity_matrix
 
-        pass
     elif affinity_type == 'rbf':
         # TODO: Apply RBF kernel
+        
+
+        for i in range(n):
+            for j in range(n):
+                affinity_matrix[i, j] = np.exp(-((LA.norm(data[i] - data[j])) ** 2) / (2 * (sigma **2)))
+        
 
         # TODO: Return affinity matrix
-
-        pass
+        return affinity_matrix
+        
     else:
         raise Exception("invalid affinity matrix type")
 
-
 if __name__ == "__main__":
     datasets = ['blobs', 'circles', 'moons']
-
     # TODO: Create and configure plot
-
     for ds_name in datasets:
-        dataset = np.load("datasets/%s.npz" % ds_name)
-        X = dataset['data']     # feature points
-        y = dataset['target']   # ground truth labels
-        n = len(np.unique(y))   # number of clusters
-
-        k = 3
+        X = np.load("./datasets/%s/data.npy" % ds_name)
+        y = np.load("./datasets/%s/target.npy" % ds_name)
+        
+        n = len(np.unique(y)) # number of clusters
+        k = 4
         sigma = 1.0
 
         y_km, _ = k_means_clustering(X, n)
+
         Arbf = construct_affinity_matrix(X, 'rbf', sigma=sigma)
         y_rbf = spectral_clustering(Arbf, n)
+
         Aknn = construct_affinity_matrix(X, 'knn', k=k)
         y_knn = spectral_clustering(Aknn, n)
 
@@ -64,5 +78,7 @@ if __name__ == "__main__":
         print("KNN affinity on %s:" % ds_name, clustering_score(y, y_knn))
 
         # TODO: Create subplots
-
     # TODO: Show subplots
+        
+
+        

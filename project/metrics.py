@@ -13,5 +13,34 @@ def clustering_score(true_labels, predicted_labels):
     """
 
     # TODO: Calculate and return clustering score
+    TP, TN, FP, FN = 0, 0, 0, 0
+    
+    n = len(true_labels)
+    for i in range(n - 1):
+        for j in range(i + 1, n):
 
-    pass
+            if predicted_labels[i] == predicted_labels[j]: # positive pair
+                if true_labels[i] == true_labels[j]: # TP
+                    TP = TP + 1
+                else: # FP
+                    FP = FP + 1
+            else: # negative pair
+                if true_labels[i] != true_labels[j]: # TN
+                    TN = TN + 1
+                else: # FN
+                    FN = FN + 1
+    
+
+    return (TN + TP) / (TN + TP + FN + FP)
+
+
+# res = [0, 0, 1, 2, 1]
+# gt = [2, 2, 3, 1, 3]
+
+# ri_output = clustering_score(gt, res)
+
+# print("ri_output=", ri_output)
+
+
+
+    
