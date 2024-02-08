@@ -25,7 +25,6 @@ def laplacian(A):
 
     return np.eye(m) - row_col_scaled_matrix
 
-
 def spectral_clustering(affinity, k):
     """
     Perform spectral clustering on the given affinity matrix.
@@ -45,6 +44,7 @@ def spectral_clustering(affinity, k):
 
     # U, _, _ = LA.svd(laplacian_affinity, full_matrices=False, lapack_driver="gesvd")
     U, _, _ = LA.svd(laplacian_affinity, full_matrices=False)
+    # LA.eig
     first_k_eigen_vectors = U[:, -k:]
 
     # TODO: Apply K-means clustering on the selected eigenvectors
@@ -73,9 +73,9 @@ def compute_first_k_eigen_vectors(A, k):
 
 
 # -------------------------- Quick Test -----------------------------
-# A = np.array([[2, 3, 5],
-#               [3, 4, 5],
-#               [1, 2, 1]])
+A = np.array([[2, 3, 4],
+              [2, 4, 1],
+              [3, 6, 8]])
 
 # scalers1 = np.array([2, 3, 1.5])
 # scalers2 = np.array([[2], [3], [1.5]])
@@ -86,8 +86,8 @@ def compute_first_k_eigen_vectors(A, k):
 
 # -------------------------- Test Laplacian -----------------------------
 
-# laplacian_A = laplacian(A)
-# print("laplacian: \n", laplacian_A)
+laplacian_A = laplacian(A)
+
 
 # ------------------------ compute the first k eigenvectors ------------------------
 

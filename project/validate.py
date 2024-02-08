@@ -23,6 +23,7 @@ def construct_affinity_matrix(data, affinity_type, *, k=3, sigma=1.0):
     affinity_matrix = np.zeros((n, n))
 
     # TODO: Compute pairwise distances
+    distances = np.linalg.norm(data[:, np.newaxis, :] - data[np.newaxis, :, :], axis=2)
 
     if affinity_type == 'knn':
         # TODO: Find k nearest neighbors for each point
@@ -32,16 +33,15 @@ def construct_affinity_matrix(data, affinity_type, *, k=3, sigma=1.0):
             k_neares_neighbors_indexes = np.argpartition(distances, k)[:k]
 
             affinity_matrix[i, k_neares_neighbors_indexes] = 1
-            affinity_matrix[k_neares_neighbors_indexes, i] = 1
 
         # TODO: Construct symmetric affinity matrix?
+            affinity_matrix[k_neares_neighbors_indexes, i] = 1
 
         # TODO: Return affinity matrix
         return affinity_matrix
 
     elif affinity_type == 'rbf':
         # TODO: Apply RBF kernel
-        
 
         for i in range(n):
             for j in range(n):
@@ -56,7 +56,11 @@ def construct_affinity_matrix(data, affinity_type, *, k=3, sigma=1.0):
 
 if __name__ == "__main__":
     datasets = ['blobs', 'circles', 'moons']
-    # TODO: Create and configure plot
+    
+    figure, axes = plt.subplots(nrows=3, ncols=4)
+
+    num_algorithms = 4
+    i = 0
     for ds_name in datasets:
         X = np.load("./datasets/%s/data.npy" % ds_name)
         y = np.load("./datasets/%s/target.npy" % ds_name)
@@ -76,9 +80,22 @@ if __name__ == "__main__":
         print("K-means on %s:" % ds_name, clustering_score(y, y_km))
         print("RBF affinity on %s:" % ds_name, clustering_score(y, y_rbf))
         print("KNN affinity on %s:" % ds_name, clustering_score(y, y_knn))
+        print("---------------------------------\n\n")
 
-        # TODO: Create subplots
-    # TODO: Show subplots
+        Ys = [y_km, y_rbf, y_knn, y]
+        labels = ["K-means", "RBF", "KNN", "Ground Truth"]
+
+        for j in range(num_algorithms):
+
+            sc = axes[i, j].scatter(X[:, 0], X[:, 1], c=Ys[j], cmap="viridis", edgecolors='k' ,linewidth=0.5, s=35, marker="o", label=labels[j])
+            axes[i, j].set_title(f'{labels[j]} ({ds_name})', fontdict={'fontsize': 10, 'color': 'blue'})
+            axes[i, j].legend(*sc.legend_elements(), title='clusters', fontsize=5, title_fontsize=8)
+            axes[i, j].margins(0.2)
+
+        i = i + 1
         
-
+    # TODO: Show subplots
+    plt.tight_layout()
+    plt.show()
+    
         

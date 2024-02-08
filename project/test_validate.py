@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from numpy import linalg as LA 
 from validate import construct_affinity_matrix
 
-
 # ------------------------- test construct_affinity_matrix -------------------------
 
 # data = np.array([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [-1, -5], [3, -4], [-2, 4]])
