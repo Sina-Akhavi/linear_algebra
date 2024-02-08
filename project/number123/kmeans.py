@@ -27,10 +27,6 @@ def k_means_clustering(data, k, max_iterations=100):
 
     return nearest_centroid_idx_for_each_point, centroids 
 
-def reset_clusters(clusters):
-    for i in range(len(clusters)): # < k = 1 or 2 or 3
-        clusters[i] = []
-
 def create_centroid_cluster_structure(data, k):
     indices_array = np.arange(len(data))
     random_indices = np.random.choice(indices_array, size=k, replace=False)
